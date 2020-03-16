@@ -1,18 +1,59 @@
+"""
+.. py:module:: pandas_dwm
+    :platform: Unix
+
+.. note::
+    Pandas Data Wrapper Manipulation functions.
+
+.. moduleauthor:: `Bernardo Costa <bernardo.costa@solvimm.com>`
+
+"""
+
 import pandas as pd
-import awswrangler
 
 
 def create_df(cols, rows):
+    """ 
+        Return a Pandas DataFrame based on cols and rows. 
+        
+        Parameters: 
+            cols (List of strings): List of columns name.
+            rows (List of Lists): List of rows (each list is a row) 
+          
+        Returns: 
+            pandas.DataFrame: with columns cols and Rows rows. 
+    """
     return pd.DataFrame(rows, columns=cols) 
 
 
 def cast_column(df, col, _type):
+    """ 
+        Return a DataFrame Column casted with '_type'. 
+        
+        Parameters: 
+            df (pandas.DataFrame): The DataFrame.
+            col (string): column to cast.
+            _type (Type): Type to cast (ex: str, int, float, ...).
+          
+        Returns: 
+            pandas.DataFrame: with columns cols and Rows rows. 
+    """
     return df[col].astype(_type)
 
 
 def read_athena(session, query, db, params=None):
-    """Return Pandas DataFrame running a Query in Athena."""
-    
+    """ 
+        Return pandas.DataFrame running a Query in Athena.
+        
+        Parameters: 
+            session (awswrangler.session.Session): Session of awswrangler.
+            query (string): Athena query with python format string.
+            db (string): Athena DataBase name.
+            params (Dict): Dict with param name and param value.
+          
+        Returns: 
+            pandas.DataFrame: Pandas DataFrame based on athena Query. 
+    """
     if params is None:
         df = session.pandas.read_sql_athena(
             sql=query,
@@ -24,9 +65,22 @@ def read_athena(session, query, db, params=None):
     return df
 
 
-def join(df1, df2, left_on=None, right_on=None, on=None, how='left', _suffixes=('', '_y')):
-    """Return d1 join d2 on based conditions."""
-    
+def join(df1, df2, left_on=None, right_on=None, on=None, how='inner', _suffixes=('', '_y')):
+    """ 
+        Return 'df1' joined 'df2' based on given conditions. Use 'on' or 'left_on' and 'right_on'.
+        
+        Parameters: 
+            df1 (pandas.DataFrame): Left DataFrame.
+            df2 (pandas.DataFrame): Right DataFrame.
+            left_on (List of Strings): Left Columns to join.
+            right_on (List of Strings): Right Columns to join.
+            on (List of Strings): Columns to join.
+            how (string): How to join ('left', 'right', 'outer', 'inner'}
+            _suffixes (tuple): tuple (left_suffix, right_suffix). In case to duplicated columns.
+          
+        Returns: 
+            pandas.DataFrame: 'df1' joined 'df2' based on given conditions.
+    """
     if on is None:
         df = pd.merge(df1, df2,left_on=left_on, right_on=right_on, how=how, suffixes=_suffixes)
     elif right_on is None and left_on is None:
