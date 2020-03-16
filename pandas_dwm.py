@@ -5,7 +5,7 @@
 .. note::
     Pandas Data Wrapper Manipulation functions.
 
-.. moduleauthor:: `Bernardo Costa <bernardo.costa@solvimm.com>`
+.. moduleauthor:: `Bernardo Costa <bernardoantunescosta at gmail.com>`
 
 """
 
