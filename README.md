@@ -14,7 +14,7 @@ import awswrangler
 import pandas_dwm as pd_dwm
 
 awswrangler_session = awswrangler.Session()
-QUERY = 'SELECET * FROM foo;'
+QUERY = 'SELECT * FROM foo;'
 DATABASE = db'
 
 df = pd_dwm.read_athena(awswrangler_session, QUERY, DATABASE)
