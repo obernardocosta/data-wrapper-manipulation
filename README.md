@@ -4,7 +4,7 @@ It's a wrapper to increase productivity, enable code reusability, with native be
 
 ## Usage
 
-Add this lib in your requirements.txt, than import It!
+Add this lib in your requirements.txt, then import It!
 
 ### Pandas
 
@@ -15,7 +15,7 @@ import pandas_dwm as pd_dwm
 
 awswrangler_session = awswrangler.Session()
 QUERY = 'SELECET * FROM foo;'
-DATABASE = "db"
+DATABASE = db'
 
 df = pd_dwm.read_athena(awswrangler_session, QUERY, DATABASE)
 ```
