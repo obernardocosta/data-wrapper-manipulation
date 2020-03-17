@@ -1,12 +1,9 @@
 """
 .. py:module:: pandas_dwm
     :platform: Unix
-
 .. note::
     Pandas Data Wrapper Manipulation functions.
-
 .. moduleauthor:: `Bernardo Costa <bernardoantunescosta at gmail.com>`
-
 """
 
 import pandas as pd
@@ -158,7 +155,37 @@ def send_parquet_to_s3(session, df, database, s3_path, partition_cols=['p_ano', 
             partition_cols=None)
         
 
+def delete_from_athena(session, s3_resource, query, db, params=None):
+    """ query format "SELECT DISTINCT("$path")" ...""""
+    df = read_athena(session, query, db, params=None)
+    _delete_s3_object(s3_resource, path)
+
+        
 def _drop_y(df):
     # list comprehension of the cols that end with '_y'
     to_drop = [x for x in df if x.endswith('_y')]
     return df.drop(to_drop, axis=1, inplace=True)
+
+
+def _delete_s3_object(df, s3_conn, path):
+    
+    def bucket_and_key_from_path(path):
+        parts = path[5:].split("/")
+        bucket = parts.pop(0)
+        key = "/".join(parts)
+        return bucket, key
+
+    def load_itens_to_delete()
+        bucket_name = ''
+        itens_to_delete = {'Objects': [], 'Quiet': True}
+        for t in df.itertuples():
+            bucket_name = t.path[0]
+            itens_to_delete['Objects'].append({'Key': t.path[1]})
+        return bucket_name, itens_to_delete
+    
+    df['path'] = apply_lambda(df, '$path', bucket_and_key_from_path)
+    bucket_name, itens_to_delete = load_itens_to_delete()
+    
+        
+    bucket = s3.Bucket(bucket_name)
+    result = bucket.delete_objects(Delete=delete)
