@@ -92,6 +92,8 @@ def groupby(df, columns, on, how='sum'):
     """Return d1 grouped on based conditions."""
     if how == 'sum':
         df = df.groupby(columns)[on].sum().reset_index()
+    elif how == 'mean':
+        df = df.groupby(columns)[on].mean().reset_index()
     else:
         raise Exception('Only sum implemented.')
     return df
