@@ -7,6 +7,7 @@
 """
 
 import pandas as pd
+import awswrangler as wr
 
 
 def create_df(cols, rows):
@@ -38,12 +39,12 @@ def cast_column(df, col, _type):
     return df[col].astype(_type)
 
 
-def read_athena(session, query, db, params=None):
+def read_athena(boto3_session, query, db, params=None, ctas_approach=False):
     """ 
         Return pandas.DataFrame running a Query in Athena.
         
         Parameters: 
-            session (awswrangler.session.Session): Session of awswrangler.
+            session (boto3.session.Session): boto3 custom Session.
             query (string): Athena query with python format string.
             db (string): Athena DataBase name.
             params (Dict): Dict with param name and param value.
@@ -52,13 +53,17 @@ def read_athena(session, query, db, params=None):
             pandas.DataFrame: Pandas DataFrame based on athena Query. 
     """
     if params is None:
-        df = session.pandas.read_sql_athena(
+        df = wr.athena.read_sql_query(
             sql=query,
-            database=db)
+            database=db,
+            boto3_session=boto3_session,
+            ctas_approach=ctas_approach)
     else:
-        df = session.pandas.read_sql_athena(
+        df = wr.athena.read_sql_query(
             sql=query.format(**params),
-            database=db)
+            database=db,
+            boto3_session=boto3_session,
+            ctas_approach=ctas_approach)
     return df
 
 
@@ -148,13 +153,16 @@ def load_date_partition_cols(df, col, partition_cols_config={'year': 'p_ano', 'm
     return df
 
 
-def send_parquet_to_s3(session, df, database, s3_path, partition_cols=['p_ano', 'p_mes', 'p_dia']):
-     return session.pandas.to_parquet(
-            dataframe=df,
-            preserve_index=False,
+def send_parquet_to_s3(boto3_session, df, database, s3_path, partition_cols=['p_ano', 'p_mes', 'p_dia'],mode='append', dataset=True):
+     return wr.s3.to_parquet(
+            df=df,
+            index=False,
             database=database,
             path=s3_path,
-            partition_cols=None)
+            partition_cols=partition_cols,
+            boto3_session=boto3_session,
+            mode=mode,
+            dataset=dataset)
         
 
 def delete_from_athena(session, s3_resource, query, db, params=None):
