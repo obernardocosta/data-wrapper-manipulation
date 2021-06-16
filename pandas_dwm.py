@@ -166,7 +166,7 @@ def send_parquet_to_s3(boto3_session, df, database, s3_path, partition_cols=['p_
         
 
 def delete_from_athena(session, s3_resource, query, db, params=None):
-    """ query format "SELECT DISTINCT("$path")" ...""""
+    """ query format "SELECT DISTINCT("$path")" ..."""
     df = read_athena(session, query, db, params=None)
     _delete_s3_object(s3_resource, path)
 
@@ -185,7 +185,7 @@ def _delete_s3_object(df, s3_conn, path):
         key = "/".join(parts)
         return bucket, key
 
-    def load_itens_to_delete()
+    def load_itens_to_delete():
         bucket_name = ''
         itens_to_delete = {'Objects': [], 'Quiet': True}
         for t in df.itertuples():
